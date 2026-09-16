@@ -3,7 +3,7 @@ import './App.css';
 import Game from './Canvas';
 
 function App() {
-  GameCanvas();
+  Game();
   <div className='App'>
   </div>
 }
