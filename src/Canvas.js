@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import kaplay from 'kaplay';
 
-function GameCanvas() {
+function Game() {
   const k = kaplay();
 
   k.loadRoot("./")
@@ -11,4 +11,4 @@ function GameCanvas() {
   k.onClick(() => k.addKaboom(k.mousePos()));
 }
 
-export default GameCanvas;
+export default Game;
