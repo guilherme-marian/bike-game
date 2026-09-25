@@ -4,6 +4,7 @@ import kaplay from 'kaplay';
 import imgMoto from './assets/mark-o.png';
 import imgObstaculo from './assets/ghosty-o.png';
 import imgItemBom from './assets/apple-o.png';
+import imgCharacter from './assets/Character.png'
 
 function Game() {
   const canvasRef = useRef(null);
@@ -21,6 +22,10 @@ function Game() {
     k.loadSprite("moto", imgMoto); 
     k.loadSprite("obstaculo", imgObstaculo);
     k.loadSprite("item_bom", imgItemBom);
+
+    k.loadSprite("personagem", imgCharacter, {
+      sliceX: 2
+    })
 
     const FAIXAS_Y = [330, 410, 490];
 
@@ -229,7 +234,7 @@ function Game() {
     k.color(0, 0, 0)
   ]);
 
-  const uiReais = k.add([
+  k.add([
     k.text(`Carteira: R$ ${reais}`, { size: 16 }), 
     k.pos(20, 150), // Posicionado logo abaixo do contador de distância
     k.color(0, 150, 0) // Cor verde para lembrar dinheiro
@@ -450,14 +455,14 @@ function Game() {
         k.color(0, 120, 0)
       ]);
 
-      const uiMissionTxt = k.add([
+      k.add([
         k.text(`${m1.texto}\n${m1.recompensaTexto}`, { size: 16, lineSpacing: 8 }),
         k.pos(100, 200),
         k.color(50, 50, 50)
       ]);
 
       const progressoAtual = m1.concluida ? 3000 : Math.min(distanciaPercorrida, m1.meta);
-      const uiProgressoTxt = k.add([
+      k.add([
         k.text(`Progresso: ${(progressoAtual / 1000).toFixed(2)} / ${(m1.meta / 1000).toFixed(0)} km`, { size: 14 }),
         k.pos(100, 260),
         k.color(100, 100, 100)
@@ -469,7 +474,7 @@ function Game() {
       if (m1.recompensada) textoBotao = "Concluída ✔";
 
       // O BOTÃO DE AÇÃO DA MISSÃO
-      const botao = criarBotao(textoBotao, k.vec2(k.width() / 2 + 180, 240), () => {
+      criarBotao(textoBotao, k.vec2(k.width() / 2 + 180, 240), () => {
         
         // CASO 1: Aceitar a missão
         if (!m1.aceita) {
