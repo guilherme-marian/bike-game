@@ -4,7 +4,7 @@ import kaplay from 'kaplay';
 import imgMoto from './assets/mark-o.png';
 import imgObstaculo from './assets/ghosty-o.png';
 import imgItemBom from './assets/apple-o.png';
-import imgCharacter from './assets/Character.png'
+import imgCharacter from './assets/CharacterAlt.png'
 
 function Game() {
   const canvasRef = useRef(null);
@@ -19,17 +19,23 @@ function Game() {
       align: "center",
     });
 
-    k.loadSprite("moto", imgMoto); 
+    k.loadSprite("motoG", imgMoto); 
     k.loadSprite("obstaculo", imgObstaculo);
     k.loadSprite("item_bom", imgItemBom);
 
-    k.loadSprite("personagem", imgCharacter, {
-      sliceX: 2
-    })
+    k.loadSprite("moto", imgCharacter, {
+      width: 100,
+      height: 100,
+      sliceX: 4,
+      sliceY: 4,
+      anims: {
+        bike: {from: 4, to: 4, loop: false},
+      }
+    }) 
 
     const FAIXAS_Y = [330, 410, 490];
 
-    let reais = 0
+    let reais = 9990
 
     let pontos = 0;
     let vidas = 3;
@@ -80,14 +86,15 @@ function Game() {
       const missionbtn = k.add([
         k.rect(260, 50, {radius: 10}),
         k.pos(k.width() / 2 - 130, 230),
-        k.color(0, 150, 0),
+        k.color(0, 100, 200),
         k.area(),
       ])
 
       missionbtn.add([
-        k.pos(k.width() / 2, 325),
+        k.text("Missões", {size: 18}),
+        k.pos(130, 25), 
         k.anchor("center"),
-        k.color(0, 150, 0),
+        k.color(255, 255, 255),
       ])
 
       missionbtn.onHover(() => {
@@ -107,13 +114,13 @@ function Game() {
       const upgradebtn = k.add([
         k.rect(260,50, {radius: 10}),
         k.pos(k.width() / 2 - 130, 300),
-        k.color(0, 150, 0),
+        k.color(0, 100, 200),
         k.area(),
       ]);
 
       upgradebtn.add([
-        k.text("Oficina", {size: 10}),
-        k.pos(k.width() / 2, 325),
+        k.text("Oficina", {size: 18}),
+        k.pos(130, 25), 
         k.anchor("center"),
         k.color(255, 255, 255)
       ]);
@@ -161,7 +168,10 @@ function Game() {
       k.add([k.rect(k.width(), 4), k.pos(0, 490), k.color(255, 255, 255)]);
 
       const jogador = k.add([
-        k.sprite("moto"),
+        k.sprite("moto", {
+          anim: "bike",
+        }),
+        k.scale(3),
         k.pos(120, FAIXAS_Y[faixaAtual]),
         k.anchor("center"),
         k.area(),
@@ -247,7 +257,6 @@ function Game() {
       function spawnElemento() {
         const faixaOcupada = k.choose([0, 1, 2]); // Define qual das 3 pistas terá o pedestre
         const tipo = k.choose(["obstaculo", "item_bom", "faixa_pedestre"]);
-        const velocidadeAtual = faseAtual === 1 ? 250 : 380;
 
         if (tipo === "faixa_pedestre") {
           const faixaContainer = k.add([
@@ -363,7 +372,7 @@ function Game() {
         uiVidas.text = `Vidas: ${vidas}`;
         
         velocidadeAtual = VEL_MINIMA;
-        uiVelocidade.text = `Velocidade: ${velocidadeAtual} km/h`;
+        uiVelocidade.text = `Velocidade: ${velocidadeAtual / 10} km/h`;
 
         const aviso = k.add([
           k.text(obstaculo.mensagem, { size: 16, align: "center" }), 
@@ -502,14 +511,14 @@ function Game() {
       });
 
       k.add([
-        k.text("Pressione ESPAÇO para retornar às pistas", { size: 16 }),
+        k.text("Pressione ESPAÇO para retornar ao Menu", { size: 16 }),
         k.pos(k.width() / 2, 500),
         k.anchor("center"),
         k.color(120, 120, 120)
       ]);
 
       k.onKeyPress("space", () => {
-        k.go("game");
+        k.go("menu");
       });
     });
 
@@ -519,6 +528,12 @@ function Game() {
         k.pos(k.width() / 2, 80),
         k.anchor("center"),
         k.color(0, 0, 0)
+      ]);
+
+      k.add([
+        k.text(`Seu Saldo: R$ ${reais}`, { size: 18 }),
+        k.pos(100, 140),
+        k.color(0, 120, 0)
       ]);
 
       const uiSaldo = k.add([
@@ -534,15 +549,15 @@ function Game() {
         k.color(50, 50, 50)
       ]);
 
-      criarBotao("+1 Vida Máxima (Custa 100 pts)", k.vec2(k.width() / 2 + 150, 250), () => {
-        if (pontos >= 100) {
-          pontos -= 100;
+      criarBotao("+1 Vida Máxima (Custa R$100,00)", k.vec2(k.width() / 2 + 150, 250), () => {
+        if (reais >= 100) {
+          reais -= 100;
           vidasMaximas += 1;
 
-          uiSaldo.text = `Seus Pontos: ${pontos}`;
+          uiSaldo.text = `Sua Carteira : R$${reais}`;
           uiVidaTxt.text = `Vida Máxima Atual: ${vidasMaximas}`;
         } else {
-          const erro = k.add([k.text("Pontos insuficientes!", { size: 14 }), k.pos(k.width()/2, 200), k.anchor("center"), k.color(255,0,0)]);
+          const erro = k.add([k.text("Dinheiro insuficiente!", { size: 14 }), k.pos(k.width()/2, 200), k.anchor("center"), k.color(255,0,0)]);
           k.wait(1, () => k.destroy(erro));
         }
       });
@@ -553,14 +568,14 @@ function Game() {
         k.color(50, 50, 50)
       ]);
 
-      criarBotao("Motor Turbo (Custa 40 pts)", k.vec2(k.width() / 2 + 150, 350), () => {
-        if (pontos >= 40) {
-          pontos -= 40;
+      criarBotao("Motor Turbo (Custa R$40,00)", k.vec2(k.width() / 2 + 150, 350), () => {
+        if (reais >= 40) {
+          reais -= 40;
           bonusVelocidade += 50; 
-          uiSaldo.text = `Seus Pontos: ${pontos}`;
+          uiSaldo.text = `Sua Carteira: R$${reais}`;
           uiMotorTxt.text = `Bônus de Motor: +${bonusVelocidade / 10} km/h`;
         } else {
-          const erro = k.add([k.text("Pontos insuficientes!", { size: 14 }), k.pos(k.width()/2, 200), k.anchor("center"), k.color(255,0,0)]);
+          const erro = k.add([k.text("Dinheiro insuficiente!", { size: 14 }), k.pos(k.width()/2, 200), k.anchor("center"), k.color(255,0,0)]);
           k.wait(1, () => k.destroy(erro));
         }
       });
