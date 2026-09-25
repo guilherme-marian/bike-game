@@ -489,7 +489,7 @@ function Game() {
           // Adiciona o valor da recompensa direto na carteira global do jogador
           reais += m1.valorRecompensa; 
           
-          const sucesso = k.add([
+          k.add([
             k.text(`+ R$ ${m1.valorRecompensa} adicionados à sua carteira!`, { size: 16 }),
             k.pos(k.width() / 2, 160),
             k.anchor("center"),
