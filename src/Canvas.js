@@ -5,6 +5,7 @@ import imgMoto from './assets/mark-o.png';
 import imgObstaculo from './assets/ghosty-o.png';
 import imgItemBom from './assets/apple-o.png';
 import imgCharacter from './assets/CharacterAlt.png'
+import cityBackground from './assets/City.png';
 
 function Game() {
   const canvasRef = useRef(null);
@@ -33,6 +34,8 @@ function Game() {
       }
     }) 
 
+    k.loadSprite("bg-cidade", cityBackground);
+
     const FAIXAS_Y = [330, 410, 490];
 
     let reais = 9990
@@ -48,7 +51,7 @@ function Game() {
     let distanciaPercorrida = 0; 
 
     const VEL_MINIMA = 150;
-    const VEL_MAXIMA = 550;
+    const VEL_MAXIMA = 420;
 
     const missoes = [
       {
@@ -154,24 +157,68 @@ function Game() {
         k.go("game");
       });
     });
-
     k.scene("game", () => {
       let faixaAtual = 1; 
 
+      // 1. Damos uma camada explicitamente maior para a pista (ex: z(1)) para não cobrir o fundo
       k.add([
         k.rect(k.width(), 240),
         k.pos(0, 330),
         k.color(100, 100, 100),
+        k.z(0), 
       ]);
 
-      k.add([k.rect(k.width(), 4), k.pos(0, 410), k.color(255, 255, 255)]);
-      k.add([k.rect(k.width(), 4), k.pos(0, 490), k.color(255, 255, 255)]);
+      k.add([k.rect(k.width(), 4), k.pos(0, 410), k.color(255, 255, 255), k.z(1)]);
+      k.add([k.rect(k.width(), 4), k.pos(0, 490), k.color(255, 255, 255), k.z(1)]);
+
+      // 2. Criamos os fundos na camada z(0)
+      // 1. Criamos as duas imagens sem definir uma escala fixa logo de início
+      const bg1 = k.add([
+          k.sprite("bg-cidade"),
+          k.pos(0, 50), 
+          k.z(-1),
+      ]);
+
+      const bg2 = k.add([
+          k.sprite("bg-cidade"),
+          k.pos(0, 50), 
+          k.z(-1),
+      ]);
+
+      let bgOffset = 0;
+
+      // 2. O loop que corrige o tamanho em tempo real assim que a imagem carregar
+      k.onUpdate(() => {
+          // Se a imagem ainda estiver com largura 0 (carregando), evitamos quebrar o código
+          if (bg1.width === 0) return;
+
+          // Descobrimos dinamicamente quanta escala horizontal precisamos para preencher a tela inteira
+          const idealScaleX = k.width() / bg1.width;
+          
+          // Aplicamos a escala em tempo real em ambas as partes (X preenche a tela, Y mantém proporcional)
+          bg1.scale = k.vec2(idealScaleX, 2);
+          bg2.scale = k.vec2(idealScaleX, 2);
+
+          // Agora calculamos a largura física exata pós-escala
+          const larguraRealBG = bg1.width * bg1.scale.x;
+
+          // Acumulamos o movimento com base no frame-rate (k.dt())
+          bgOffset += velocidadeAtual * 0.2 * k.dt();
+
+          // O cálculo do Modulo (%) garante que o valor de currentX nunca passe de uma largura inteira
+          const currentX = -(bgOffset % larguraRealBG);
+
+          // Posicionamos os dois blocos grudados lado a lado sem nenhuma brecha
+          bg1.pos.x = currentX;
+          bg2.pos.x = currentX + larguraRealBG;
+      });
 
       const jogador = k.add([
         k.sprite("moto", {
           anim: "bike",
         }),
         k.scale(3),
+        k.z(1),
         k.pos(120, FAIXAS_Y[faixaAtual]),
         k.anchor("center"),
         k.area(),
@@ -271,7 +318,7 @@ function Game() {
               k.rect(40, 15),
               k.pos(0, i),
               k.color(255, 255, 255),
-              k.opacity(0.8)
+              k.opacity(0.8),
             ]);
           }
 
@@ -280,6 +327,7 @@ function Game() {
             k.pos(k.width(), FAIXAS_Y[faixaOcupada]),
             k.anchor("center"),
             k.area(),
+            k.z(1),
             k.move(k.LEFT, velocidadeAtual),
             "perigo",
             { 
@@ -333,6 +381,7 @@ function Game() {
             k.pos(k.width(), FAIXAS_Y[faixaOcupada]),
             k.anchor("center"),
             k.area(),
+            k.z(1),
             k.move(k.LEFT, velocidadeAtual),
             "perigo",
             { 
@@ -346,6 +395,7 @@ function Game() {
             k.sprite("item_bom"),
             k.pos(k.width(), FAIXAS_Y[faixaOcupada]),
             k.anchor("center"),
+            k.z(1),
             k.area(),
             k.move(k.LEFT, velocidadeAtual),
             "seguro",
@@ -371,7 +421,7 @@ function Game() {
         k.addKaboom(jogador.pos.x, jogador.pos.y);
         uiVidas.text = `Vidas: ${vidas}`;
         
-        velocidadeAtual = VEL_MINIMA;
+        velocidadeAtual -= VEL_MINIMA;
         uiVelocidade.text = `Velocidade: ${velocidadeAtual / 10} km/h`;
 
         const aviso = k.add([
