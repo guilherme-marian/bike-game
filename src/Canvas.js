@@ -38,7 +38,7 @@ function Game() {
 
     const FAIXAS_Y = [330, 410, 490];
 
-    let reais = 9990
+    let reais = 0
 
     let pontos = 0;
     let vidas = 3;
