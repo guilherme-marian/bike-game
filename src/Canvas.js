@@ -558,13 +558,13 @@ function Game() {
 
       k.add([
         k.text(`Seu Saldo: R$ ${reais}`, { size: 18 }),
-        k.pos(100, 140),
+        k.pos(100, 340),
         k.color(0, 120, 0)
       ]);
 
       k.add([
         k.text(`${m2.texto}\n${m1.recompensaTexto}`, { size: 16, lineSpacing: 8 }),
-        k.pos(100, 200),
+        k.pos(100, 300),
         k.color(50, 50, 50)
       ]);
 
@@ -594,7 +594,7 @@ function Game() {
           
           k.add([
             k.text(`+ R$ ${m2.valorRecompensa} adicionados à sua carteira!`, { size: 16 }),
-            k.pos(k.width() / 2, 160),
+            k.pos(k.width() / 2, 360),
             k.anchor("center"),
             k.color(0, 180, 0)
           ]);
