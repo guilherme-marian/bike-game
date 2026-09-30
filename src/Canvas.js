@@ -571,7 +571,7 @@ function Game() {
       const progressoAtual2 = m2.concluida ? 3000 : Math.min(distanciaPercorrida, m2.meta);
       k.add([
         k.text(`Progresso: ${(progressoAtual2 / 1000).toFixed(2)} / ${(m2.meta / 1000).toFixed(0)} km`, { size: 14 }),
-        k.pos(100, 260),
+        k.pos(100, 360),
         k.color(100, 100, 100)
       ]);
 
@@ -580,7 +580,7 @@ function Game() {
       if (m2.concluida) textoBotao2 = "Resgatar Recompensa";
       if (m2.recompensada) textoBotao2 = "Concluída ✔";
 
-      criarBotao(textoBotao2, k.vec2(k.width() / 2 + 180, 240), () => {
+      criarBotao(textoBotao2, k.vec2(k.width() / 2 + 180, 340), () => {
         
         if (!m2.aceita) {
           m2.aceita = true;
@@ -601,7 +601,7 @@ function Game() {
           
           k.wait(2, () => k.go("mission"));
         }
-      });
+      }); 
 
       k.add([
         k.text("Pressione ESPAÇO para retornar ao Menu", { size: 16 }),
