@@ -554,7 +554,7 @@ function Game() {
         }
       });
 
-      const m2 = missoes.find(m => m.id === 2);
+      /* const m2 = missoes.find(m => m.id === 2);
 
       k.add([
         k.text(`Seu Saldo: R$ ${reais}`, { size: 18 }),
@@ -601,7 +601,7 @@ function Game() {
           
           k.wait(2, () => k.go("mission"));
         }
-      }); 
+      });  */
 
       k.add([
         k.text("Pressione ESPAÇO para retornar ao Menu", { size: 16 }),
