@@ -507,7 +507,6 @@ function Game() {
 
       const m1 = missoes.find(m => m.id === 1);
 
-      // Exibe o texto da missão e o saldo atual de Reais do jogador no topo
       k.add([
         k.text(`Seu Saldo: R$ ${reais}`, { size: 18 }),
         k.pos(100, 140),
@@ -532,20 +531,16 @@ function Game() {
       if (m1.concluida) textoBotao = "Resgatar Recompensa";
       if (m1.recompensada) textoBotao = "Concluída ✔";
 
-      // O BOTÃO DE AÇÃO DA MISSÃO
       criarBotao(textoBotao, k.vec2(k.width() / 2 + 180, 240), () => {
         
-        // CASO 1: Aceitar a missão
         if (!m1.aceita) {
           m1.aceita = true;
-          k.go("mission"); // Recarrega a cena para atualizar o texto do botão para "Em Andamento..."
+          k.go("mission");
         } 
         
-        // CASO 2: Resgatar o dinheiro de verdade!
         else if (m1.concluida && !m1.recompensada) {
           m1.recompensada = true;
           
-          // Adiciona o valor da recompensa direto na carteira global do jogador
           reais += m1.valorRecompensa; 
           
           k.add([
@@ -555,7 +550,55 @@ function Game() {
             k.color(0, 180, 0)
           ]);
           
-          // Recarrega a tela após 2 segundos para atualizar o saldo visual de Reais lá no topo
+          k.wait(2, () => k.go("mission"));
+        }
+      });
+
+      const m2 = missoes.find(m => m.id === 2);
+
+      k.add([
+        k.text(`Seu Saldo: R$ ${reais}`, { size: 18 }),
+        k.pos(100, 140),
+        k.color(0, 120, 0)
+      ]);
+
+      k.add([
+        k.text(`${m2.texto}\n${m1.recompensaTexto}`, { size: 16, lineSpacing: 8 }),
+        k.pos(100, 200),
+        k.color(50, 50, 50)
+      ]);
+
+      const progressoAtual = m2.concluida ? 3000 : Math.min(distanciaPercorrida, m2.meta);
+      k.add([
+        k.text(`Progresso: ${(progressoAtual / 1000).toFixed(2)} / ${(m2.meta / 1000).toFixed(0)} km`, { size: 14 }),
+        k.pos(100, 260),
+        k.color(100, 100, 100)
+      ]);
+
+      let textoBotao = "Aceitar Missão";
+      if (m2.aceita) textoBotao = "Em Andamento...";
+      if (m2.concluida) textoBotao = "Resgatar Recompensa";
+      if (m2.recompensada) textoBotao = "Concluída ✔";
+
+      criarBotao(textoBotao, k.vec2(k.width() / 2 + 180, 240), () => {
+        
+        if (!m2.aceita) {
+          m2.aceita = true;
+          k.go("mission"); 
+        } 
+        
+        else if (m2.concluida && !m2.recompensada) {
+          m2.recompensada = true;
+          
+          reais += m2.valorRecompensa; 
+          
+          k.add([
+            k.text(`+ R$ ${m2.valorRecompensa} adicionados à sua carteira!`, { size: 16 }),
+            k.pos(k.width() / 2, 160),
+            k.anchor("center"),
+            k.color(0, 180, 0)
+          ]);
+          
           k.wait(2, () => k.go("mission"));
         }
       });
