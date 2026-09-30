@@ -568,9 +568,9 @@ function Game() {
         k.color(50, 50, 50)
       ]);
 
-      const progressoAtual = m2.concluida ? 3000 : Math.min(distanciaPercorrida, m2.meta);
+      const progressoAtual2 = m2.concluida ? 3000 : Math.min(distanciaPercorrida, m2.meta);
       k.add([
-        k.text(`Progresso: ${(progressoAtual / 1000).toFixed(2)} / ${(m2.meta / 1000).toFixed(0)} km`, { size: 14 }),
+        k.text(`Progresso: ${(progressoAtual2 / 1000).toFixed(2)} / ${(m2.meta / 1000).toFixed(0)} km`, { size: 14 }),
         k.pos(100, 260),
         k.color(100, 100, 100)
       ]);
