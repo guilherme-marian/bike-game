@@ -575,12 +575,12 @@ function Game() {
         k.color(100, 100, 100)
       ]);
 
-      let textoBotao = "Aceitar Missão";
-      if (m2.aceita) textoBotao = "Em Andamento...";
-      if (m2.concluida) textoBotao = "Resgatar Recompensa";
-      if (m2.recompensada) textoBotao = "Concluída ✔";
+      let textoBotao2 = "Aceitar Missão";
+      if (m2.aceita) textoBotao2 = "Em Andamento...";
+      if (m2.concluida) textoBotao2 = "Resgatar Recompensa";
+      if (m2.recompensada) textoBotao2 = "Concluída ✔";
 
-      criarBotao(textoBotao, k.vec2(k.width() / 2 + 180, 240), () => {
+      criarBotao(textoBotao2, k.vec2(k.width() / 2 + 180, 240), () => {
         
         if (!m2.aceita) {
           m2.aceita = true;
