@@ -642,7 +642,7 @@ function Game() {
       ]);
 
       const uiSaldo = k.add([
-        k.text(`Seus Pontos: ${pontos}`, { size: 20 }),
+        k.text(`Sua Carteira : $R$${reais}`, { size: 20 }),
         k.pos(k.width() / 2, 140),
         k.anchor("center"),
         k.color(0, 150, 0)
