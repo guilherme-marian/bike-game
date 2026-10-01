@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import kaplay from 'kaplay';
 
 import imgMoto from './assets/mark-o.png';
-import imgObstaculo from './assets/ghosty-o.png';
-import imgItemBom from './assets/apple-o.png';
+import imgObstaculo from './assets/Homem.png';
+import imgItemBom from './assets/Pato.png';
 import imgCharacter from './assets/CharacterAlt.png'
 import cityBackground from './assets/City.png';
 
@@ -21,8 +21,18 @@ function Game() {
     });
 
     k.loadSprite("motoG", imgMoto); 
-    k.loadSprite("obstaculo", imgObstaculo);
+    k.loadSprite("obstaculo", imgObstaculo, {
+      width: 43,
+      height: 19,
+      sliceX: 3,
+      sliceY: 1,
+      anims: {
+        man: {from: 0, to: 2, loop: true, speed: 10},
+      }
+    });
     k.loadSprite("item_bom", imgItemBom);
+
+
 
     k.loadSprite("moto", imgCharacter, {
       width: 100,
@@ -322,12 +332,13 @@ function Game() {
             ]);
           }
 
-          k.add([
+          const obstaculo = k.add([
             k.sprite("obstaculo"), 
             k.pos(k.width(), FAIXAS_Y[faixaOcupada]),
             k.anchor("center"),
             k.area(),
             k.z(1),
+            k.scale(3),
             k.move(k.LEFT, velocidadeAtual),
             "perigo",
             { 
@@ -336,6 +347,8 @@ function Game() {
                 : "Motos elétricas devem dar preferência total ao pedestre! (-1 Vida)",
             }
           ]);
+
+          obstaculo.play("man"); 
 
           faixaContainer.onUpdate(() => {
 
@@ -364,7 +377,7 @@ function Game() {
                     k.color(0, 0, 255)
                   ]);
                   k.wait(3, () => k.destroy(transicao));
-                } else if (pontos >= 80 && faseAtual === 2) {
+                } else if (pontos >= 80000000 && faseAtual === 2) {
                   k.go("fim", true);
                 }
               }
@@ -376,11 +389,12 @@ function Game() {
           });
 
         } else if (tipo === "obstaculo") {
-          k.add([
+          const obstaculo1 = k.add([
             k.sprite("obstaculo"),
             k.pos(k.width(), FAIXAS_Y[faixaOcupada]),
             k.anchor("center"),
             k.area(),
+            k.scale(3),
             k.z(1),
             k.move(k.LEFT, velocidadeAtual),
             "perigo",
@@ -390,6 +404,9 @@ function Game() {
                 : "Andar de moto elétrica sem capacete é perigoso! (-1 Vida)"
             }
           ]);
+
+          obstaculo1.play("man");
+
         } else {
           k.add([
             k.sprite("item_bom"),
@@ -397,12 +414,13 @@ function Game() {
             k.anchor("center"),
             k.z(1),
             k.area(),
+            k.scale(3),
             k.move(k.LEFT, velocidadeAtual),
             "seguro",
             {
               mensagem: faseAtual === 1
-                ? "Boa! Reduziu a velocidade perto da escola. (+10 pts)"
-                : "Excelente! Respeitou o limite de velocidade da via. (+10 pts)"
+                ? "Boa! Coletou um marreco e o removeu da via perigosa. (+10 pts)"
+                : "Boa! Coletou um marreco e o removeu da via perigosa. (+10 pts)"
             }
           ]);
         }
@@ -623,12 +641,6 @@ function Game() {
         k.color(0, 0, 0)
       ]);
 
-      k.add([
-        k.text(`Seu Saldo: R$ ${reais}`, { size: 18 }),
-        k.pos(100, 140),
-        k.color(0, 120, 0)
-      ]);
-
       const uiSaldo = k.add([
         k.text(`Seus Pontos: ${pontos}`, { size: 20 }),
         k.pos(k.width() / 2, 140),
@@ -722,9 +734,32 @@ function Game() {
     };
   }, []);
 
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#222' }}>
-      <canvas ref={canvasRef} style={{ border: '4px solid #fff', borderRadius: '8px' }} />
+    return (
+  <div style={{ 
+    width: '100vw',
+    height: '100vh', 
+    margin: 0,
+    padding: 0,
+    background: 'radial-gradient(circle, #2d1b4e 0%, #0f081d 100%)',
+    overflow: 'hidden',
+    position: 'fixed', 
+    top: 0,
+    left: 0,
+    zIndex: 1 
+  }}>
+    <canvas 
+      ref={canvasRef} 
+      style={{ 
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        border: '4px solid #00ffff', 
+        borderRadius: '12px',
+        boxSizing: 'border-box',
+        boxShadow: '0 0 20px rgba(0, 255, 255, 0.3), 0 0 60px rgba(0, 0, 0, 0.8)'
+        }} 
+      />
     </div>
   );
 }
